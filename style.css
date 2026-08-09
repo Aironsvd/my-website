@@ -1,1 +1,428 @@
+/* =========================================
+   A GIFT HIDDEN AMONG THE STARS
+   Chapter 1 — The Secret Entrance
+   ========================================= */
 
+
+/* ---------- Basic Reset ---------- */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+/* ---------- Page ---------- */
+
+body {
+    min-height: 100vh;
+    overflow: hidden;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-family: "Poppins", Arial, sans-serif;
+
+    color: #f5f7ff;
+
+    background:
+        radial-gradient(
+            circle at 50% 20%,
+            #25204d 0%,
+            #11152f 35%,
+            #060b1f 75%,
+            #02040d 100%
+        );
+}
+
+
+/* ---------- Galaxy Background ---------- */
+
+.galaxy-background {
+    position: fixed;
+    inset: 0;
+
+    overflow: hidden;
+
+    z-index: -1;
+}
+
+
+/* ---------- Stars ---------- */
+
+#stars {
+    position: absolute;
+    inset: 0;
+
+    background-image:
+        radial-gradient(circle, rgba(255,255,255,0.9) 1px, transparent 1px),
+        radial-gradient(circle, rgba(255,255,255,0.6) 1px, transparent 1px);
+
+    background-size:
+        90px 90px,
+        140px 140px;
+
+    background-position:
+        20px 30px,
+        70px 90px;
+
+    opacity: 0.65;
+
+    animation: starDrift 30s linear infinite;
+}
+
+
+/* ---------- Galaxy Glow ---------- */
+
+.galaxy-background::before {
+    content: "";
+
+    position: absolute;
+
+    width: 650px;
+    height: 650px;
+
+    left: 50%;
+    top: 45%;
+
+    transform: translate(-50%, -50%);
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(108, 203, 255, 0.14),
+            rgba(190, 120, 255, 0.08) 35%,
+            transparent 70%
+        );
+
+    filter: blur(30px);
+
+    animation: galaxyPulse 8s ease-in-out infinite;
+}
+
+
+/* ---------- Floating Flowers ---------- */
+
+#flowers::before,
+#flowers::after {
+    content: "🌸";
+
+    position: absolute;
+
+    font-size: 24px;
+
+    opacity: 0.65;
+
+    animation: floatingPetal 8s ease-in-out infinite;
+}
+
+#flowers::before {
+    left: 12%;
+    top: 20%;
+}
+
+#flowers::after {
+    right: 12%;
+    bottom: 20%;
+
+    animation-delay: 3s;
+}
+
+
+/* ---------- Login Card ---------- */
+
+.login-card {
+
+    width: min(90%, 430px);
+
+    padding: 42px 28px;
+
+    text-align: center;
+
+    border-radius: 24px;
+
+    background:
+        rgba(15, 20, 50, 0.68);
+
+    border:
+        1px solid rgba(255,255,255,0.15);
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,0.45),
+        0 0 35px rgba(108,203,255,0.08);
+
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+
+    animation: cardAppear 1.5s ease forwards;
+}
+
+
+/* ---------- Title ---------- */
+
+.login-card h1 {
+
+    font-family: Georgia, "Times New Roman", serif;
+
+    font-size: clamp(1.7rem, 6vw, 2.4rem);
+
+    line-height: 1.25;
+
+    margin-bottom: 25px;
+
+    color: #f8f4ff;
+
+    text-shadow:
+        0 0 8px rgba(108,203,255,0.7),
+        0 0 25px rgba(190,120,255,0.35);
+
+    animation: titleGlow 4s ease-in-out infinite;
+}
+
+
+/* ---------- Message ---------- */
+
+.message {
+
+    font-size: 0.98rem;
+
+    line-height: 1.7;
+
+    color: rgba(245,247,255,0.88);
+
+    margin-bottom: 28px;
+}
+
+.message strong {
+
+    color: #ffb7d5;
+
+    text-shadow:
+        0 0 10px rgba(255,183,213,0.6);
+}
+
+
+/* ---------- Password ---------- */
+
+#password {
+
+    width: 100%;
+
+    padding: 15px 18px;
+
+    border-radius: 14px;
+
+    border:
+        1px solid rgba(255,255,255,0.18);
+
+    outline: none;
+
+    background:
+        rgba(255,255,255,0.08);
+
+    color: #ffffff;
+
+    font-size: 1rem;
+
+    text-align: center;
+
+    transition:
+        0.3s ease;
+
+    margin-bottom: 16px;
+}
+
+
+#password::placeholder {
+    color: rgba(255,255,255,0.55);
+}
+
+
+#password:focus {
+
+    border-color: #6ccBff;
+
+    box-shadow:
+        0 0 15px rgba(108,203,255,0.35);
+
+    background:
+        rgba(255,255,255,0.12);
+}
+
+
+/* ---------- Unlock Button ---------- */
+
+#unlockButton {
+
+    width: 100%;
+
+    padding: 15px 20px;
+
+    border: none;
+
+    border-radius: 14px;
+
+    cursor: pointer;
+
+    font-size: 1rem;
+
+    font-weight: 600;
+
+    color: #151326;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffb7d5,
+            #ffd6e7,
+            #9ddcff
+        );
+
+    box-shadow:
+        0 8px 25px rgba(108,203,255,0.18);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+#unlockButton:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 12px 30px rgba(108,203,255,0.35);
+}
+
+
+#unlockButton:active {
+
+    transform: scale(0.97);
+}
+
+
+/* ---------- Error Message ---------- */
+
+#errorMessage {
+
+    display: none;
+
+    margin-top: 18px;
+
+    color: #ffb7d5;
+
+    font-size: 0.9rem;
+
+    animation: errorShake 0.4s ease;
+}
+
+
+/* ---------- Animations ---------- */
+
+@keyframes cardAppear {
+
+    from {
+        opacity: 0;
+        transform: translateY(25px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+@keyframes titleGlow {
+
+    0%, 100% {
+        text-shadow:
+            0 0 8px rgba(108,203,255,0.55),
+            0 0 20px rgba(190,120,255,0.25);
+    }
+
+    50% {
+        text-shadow:
+            0 0 15px rgba(108,203,255,0.9),
+            0 0 35px rgba(190,120,255,0.45);
+    }
+}
+
+
+@keyframes galaxyPulse {
+
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(0.95);
+        opacity: 0.7;
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.08);
+        opacity: 1;
+    }
+}
+
+
+@keyframes starDrift {
+
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(-90px);
+    }
+}
+
+
+@keyframes floatingPetal {
+
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-35px) rotate(15deg);
+    }
+}
+
+
+@keyframes errorShake {
+
+    0%, 100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-6px);
+    }
+
+    75% {
+        transform: translateX(6px);
+    }
+}
+
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 480px) {
+
+    .login-card {
+
+        padding: 34px 22px;
+
+        border-radius: 20px;
+    }
+
+    .message {
+        font-size: 0.92rem;
+    }
+
+    #unlockButton,
+    #password {
+        font-size: 0.95rem;
+    }
+}
