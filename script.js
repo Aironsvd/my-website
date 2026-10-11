@@ -1,13 +1,13 @@
 /* =========================================================
-   🌌 A GIFT HIDDEN AMONG THE STARS
-   Chapter 1 + Chapter 2
-   Complete JavaScript
-   ========================================================= */
+🌌 A GIFT HIDDEN AMONG THE STARS
+Chapter 1: The Secret Entrance
+Chapter 2: The Magical Gift
+Chapter 3: A Letter for Paglu
+Complete JavaScript
+========================================================= */
 
-
-/* =========================================================
-   PAGE ELEMENTS
-   ========================================================= */
+(() => {
+"use strict";
 
 const passwordInput = document.getElementById("password");
 const unlockButton = document.getElementById("unlockButton");
@@ -16,1222 +16,975 @@ const starsContainer = document.getElementById("stars");
 const flowersContainer = document.getElementById("flowers");
 const loginCard = document.querySelector(".login-card");
 
-
-/* =========================================================
-   SECRET PASSWORD
-   ========================================================= */
-
 const secretPassword = "Paglu18jan";
+let isUnlocked = false;
+let giftOpened = false;
+let letterOpened = false;
 
+/* ---------------------------------------------------------
+CHAPTER STYLES
+Everything for the gift and letter is styled here.
+Your existing index.html and style.css stay unchanged.
+--------------------------------------------------------- */
 
-/* =========================================================
-   CREATE STARS
-   ========================================================= */
+function addChapterStyles() {
+if (document.getElementById("pagluChapterStyles")) return;
 
-function createStars() {
+const style = document.createElement("style");
+style.id = "pagluChapterStyles";
 
-    if (!starsContainer) return;
-
-    starsContainer.style.backgroundImage = "none";
-
-    for (let i = 0; i < 85; i++) {
-
-        const star = document.createElement("span");
-
-        const size = Math.random() * 3 + 1;
-
-        star.style.position = "absolute";
-        star.style.width = `${size}px`;
-        star.style.height = `${size}px`;
-
-        star.style.left = `${Math.random() * 100}%`;
-        star.style.top = `${Math.random() * 100}%`;
-
-        star.style.borderRadius = "50%";
-
-        const colors = [
-            "rgba(255,255,255,0.95)",
-            "rgba(190,220,255,0.9)",
-            "rgba(255,210,235,0.85)"
-        ];
-
-        star.style.background =
-            colors[Math.floor(Math.random() * colors.length)];
-
-        star.style.boxShadow =
-            "0 0 8px rgba(255,255,255,0.45)";
-
-        const opacity =
-            Math.random() * 0.7 + 0.25;
-
-        star.style.opacity = opacity;
-
-        starsContainer.appendChild(star);
-
-        const duration =
-            Math.random() * 3000 + 2500;
-
-        const delay =
-            Math.random() * -4000;
-
-        star.animate(
-            [
-                {
-                    opacity: opacity,
-                    transform: "scale(0.8)"
-                },
-                {
-                    opacity: 1,
-                    transform: "scale(1.5)"
-                },
-                {
-                    opacity: opacity,
-                    transform: "scale(0.8)"
-                }
-            ],
-            {
-                duration: duration,
-                delay: delay,
-                iterations: Infinity,
-                easing: "ease-in-out"
-            }
-        );
-    }
+style.textContent = `
+.paglu-scene {
+position: fixed;
+inset: 0;
+z-index: 9999;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+overflow-y: auto;
+overflow-x: hidden;
+padding: 30px 18px;
+box-sizing: border-box;
+color: #fff5ff;
+text-align: center;
+font-family: Georgia, "Times New Roman", serif;
+background:
+radial-gradient(ellipse at 50% 38%,
+rgba(113, 72, 158, .36), transparent 55%),
+radial-gradient(ellipse at 15% 15%,
+rgba(99, 91, 173, .22), transparent 50%),
+linear-gradient(160deg, #19172f, #17142c 55%, #090d20);
+opacity: 0;
+transition: opacity 1s ease;
+isolation: isolate;
 }
 
-
-/* =========================================================
-   CREATE FLOATING FLOWERS / PETALS
-   ========================================================= */
-
-function createPetals() {
-
-    if (!flowersContainer) return;
-
-    const petals = ["🌸", "✿", "❀"];
-
-    for (let i = 0; i < 7; i++) {
-
-        const petal = document.createElement("span");
-
-        petal.textContent =
-            petals[Math.floor(Math.random() * petals.length)];
-
-        petal.style.position = "absolute";
-
-        petal.style.left =
-            `${Math.random() * 100}%`;
-
-        petal.style.top =
-            `${Math.random() * 100}%`;
-
-        petal.style.fontSize =
-            `${Math.random() * 13 + 14}px`;
-
-        petal.style.opacity =
-            Math.random() * 0.35 + 0.2;
-
-        petal.style.pointerEvents = "none";
-
-        petal.style.filter =
-            "drop-shadow(0 0 7px rgba(255,183,213,0.35))";
-
-        flowersContainer.appendChild(petal);
-
-        const xMovement =
-            Math.random() * 40 - 20;
-
-        const yMovement =
-            -(Math.random() * 70 + 30);
-
-        const rotation =
-            Math.random() * 80 - 40;
-
-        const duration =
-            Math.random() * 5000 + 7000;
-
-        petal.animate(
-            [
-                {
-                    transform:
-                        "translate(0, 0) rotate(0deg)"
-                },
-                {
-                    transform:
-                        `translate(${xMovement}px, ${yMovement / 2}px)
-                         rotate(${rotation / 2}deg)`
-                },
-                {
-                    transform:
-                        `translate(${xMovement * 2}px, ${yMovement}px)
-                         rotate(${rotation}deg)`
-                }
-            ],
-            {
-                duration: duration,
-                iterations: Infinity,
-                direction: "alternate",
-                easing: "ease-in-out"
-            }
-        );
-    }
+.paglu-scene.visible {
+opacity: 1;
 }
 
-
-/* =========================================================
-   WRONG PASSWORD
-   ========================================================= */
-
-function showError() {
-
-    if (!passwordInput || !loginCard) return;
-
-    if (errorMessage) {
-        errorMessage.style.display = "block";
-    }
-
-    loginCard.animate(
-        [
-            {
-                transform: "translateX(0)"
-            },
-            {
-                transform: "translateX(-8px)"
-            },
-            {
-                transform: "translateX(8px)"
-            },
-            {
-                transform: "translateX(-5px)"
-            },
-            {
-                transform: "translateX(0)"
-            }
-        ],
-        {
-            duration: 420,
-            easing: "ease-in-out"
-        }
-    );
-
-    passwordInput.style.borderColor =
-        "rgba(255,120,160,0.75)";
-
-    passwordInput.style.boxShadow =
-        "0 0 20px rgba(255,100,150,0.22)";
-
-    setTimeout(() => {
-
-        passwordInput.style.borderColor = "";
-        passwordInput.style.boxShadow = "";
-
-    }, 1400);
-
-    passwordInput.value = "";
-
-    passwordInput.focus();
+.paglu-scene * {
+box-sizing: border-box;
 }
 
-
-/* =========================================================
-   WAIT HELPER
-   ========================================================= */
-
-function wait(milliseconds) {
-
-    return new Promise((resolve) => {
-
-        setTimeout(resolve, milliseconds);
-
-    });
+.paglu-scene::before {
+content: "";
+position: fixed;
+inset: 0;
+pointer-events: none;
+z-index: -1;
+opacity: .4;
+background-image:
+radial-gradient(2px 2px at 12% 18%, white 50%, transparent 100%),
+radial-gradient(2px 2px at 80% 15%, white 50%, transparent 100%),
+radial-gradient(3px 3px at 70% 65%, #ffd5f2 50%, transparent 100%),
+radial-gradient(2px 2px at 22% 75%, white 50%, transparent 100%),
+radial-gradient(2px 2px at 90% 82%, white 50%, transparent 100%),
+radial-gradient(2px 2px at 45% 8%, #e4d0ff 50%, transparent 100%);
 }
 
-
-/* =========================================================
-   TYPEWRITER EFFECT
-   ========================================================= */
-
-function typeText(element, text, speed = 45) {
-
-    return new Promise((resolve) => {
-
-        element.textContent = "";
-
-        let index = 0;
-
-        const typing = setInterval(() => {
-
-            element.textContent +=
-                text.charAt(index);
-
-            index++;
-
-            if (index >= text.length) {
-
-                clearInterval(typing);
-
-                resolve();
-            }
-
-        }, speed);
-
-    });
+.paglu-scene .scene-heading {
+max-width: 560px;
+margin: 0 auto 24px;
+color: #fff0fb;
+font-size: clamp(1.3rem, 5vw, 2rem);
+line-height: 1.55;
+text-shadow: 0 0 22px rgba(255, 174, 226, .45);
 }
 
-
-/* =========================================================
-   UNLOCK THE STARS
-   ========================================================= */
-
-function unlockStars() {
-
-    if (!passwordInput || !unlockButton || !loginCard) {
-        return;
-    }
-
-    if (errorMessage) {
-        errorMessage.style.display = "none";
-    }
-
-    unlockButton.disabled = true;
-    passwordInput.disabled = true;
-
-    unlockButton.textContent =
-        "✨ The Stars Recognize You... ✨";
-
-    const stars =
-        starsContainer
-            ? starsContainer.querySelectorAll("span")
-            : [];
-
-    stars.forEach((star, index) => {
-
-        setTimeout(() => {
-
-            star.animate(
-                [
-                    {
-                        transform: "scale(1)"
-                    },
-                    {
-                        transform: "scale(3)"
-                    },
-                    {
-                        transform: "scale(1.4)"
-                    }
-                ],
-                {
-                    duration: 1100,
-                    easing: "ease-out",
-                    fill: "forwards"
-                }
-            );
-
-        }, index * 12);
-
-    });
-
-
-    /* Move into the story */
-
-    setTimeout(() => {
-
-        loginCard.innerHTML = `
-
-            <div class="accepted-message">
-
-                <div class="accepted-icon">
-                    ✨
-                </div>
-
-                <h1 id="storyText">
-                    Password Accepted...
-                </h1>
-
-            </div>
-
-        `;
-
-        typeStory();
-
-    }, 1300);
+.paglu-scene .scene-subtitle {
+max-width: 430px;
+margin: 12px auto;
+color: #e7d7f5;
+font-family: Georgia, "Times New Roman", serif;
+font-size: 1rem;
+line-height: 1.8;
 }
 
-
-/* =========================================================
-   CHAPTER 1 STORY
-   ========================================================= */
-
-async function typeStory() {
-
-    const storyText =
-        document.getElementById("storyText");
-
-    if (!storyText) return;
-
-
-    await typeText(
-        storyText,
-        "Password Accepted...",
-        55
-    );
-
-    await wait(900);
-
-
-    await typeText(
-        storyText,
-        "Hello, Paglu...",
-        75
-    );
-
-    await wait(1100);
-
-
-    await typeText(
-        storyText,
-        "I've been waiting for you.",
-        55
-    );
-
-    await wait(1300);
-
-
-    await typeText(
-        storyText,
-        "Your birthday story is ready...",
-        55
-    );
-
-    await wait(1700);
-
-
-    storyText.style.fontSize = "1.35rem";
-
-
-    await typeText(
-        storyText,
-        "✨ The journey is about to begin... ✨",
-        45
-    );
-
-
-    /* Give the final message a moment */
-
-    await wait(1800);
-
-
-    /* NOW ENTER CHAPTER 2 */
-
-    showGiftScene();
+.paglu-scene .scene-button {
+display: inline-block;
+max-width: 100%;
+margin-top: 22px;
+padding: 14px 23px;
+border: 1px solid rgba(255, 218, 244, .6);
+border-radius: 999px;
+color: #fff9ff;
+background: linear-gradient(135deg, #b967a0, #8463ba);
+box-shadow: 0 0 25px rgba(226, 139, 218, .2);
+font: 600 1rem Georgia, "Times New Roman", serif;
+cursor: pointer;
+transition: transform .25s ease, box-shadow .25s ease;
 }
 
-
-/* =========================================================
-   CHAPTER 2 STYLE
-   Everything below is automatically created by JavaScript.
-   You do NOT need to change style.css.
-   ========================================================= */
-
-function createGiftStyles() {
-
-    if (document.getElementById("giftChapterStyles")) {
-        return;
-    }
-
-    const style = document.createElement("style");
-
-    style.id = "giftChapterStyles";
-
-    style.textContent = `
-
-        .paglu-gift-scene {
-
-            position: fixed;
-
-            inset: 0;
-
-            z-index: 999;
-
-            display: flex;
-
-            flex-direction: column;
-
-            justify-content: center;
-
-            align-items: center;
-
-            text-align: center;
-
-            overflow: hidden;
-
-            opacity: 0;
-
-            pointer-events: none;
-
-            background:
-                radial-gradient(
-                    circle at 50% 48%,
-                    rgba(255,183,213,0.15),
-                    transparent 35%
-                );
-
-            transition:
-                opacity 1.5s ease;
-        }
-
-
-        .paglu-gift-scene.visible {
-
-            opacity: 1;
-
-            pointer-events: auto;
-        }
-
-
-        .paglu-gift-message {
-
-            position: relative;
-
-            z-index: 5;
-
-            max-width: 90%;
-
-            padding: 0 20px;
-
-            margin-bottom: 30px;
-
-            color: #fff8fc;
-
-            font-family:
-                Georgia,
-                "Times New Roman",
-                serif;
-
-            font-size:
-                clamp(1.3rem, 6vw, 2rem);
-
-            line-height: 1.45;
-
-            text-shadow:
-                0 0 10px rgba(255,255,255,0.5),
-                0 0 25px rgba(255,183,213,0.45);
-
-            animation:
-                pagluRomanticMessage
-                3s ease-in-out infinite;
-        }
-
-
-        .paglu-gift-area {
-
-            position: relative;
-
-            width: 190px;
-
-            height: 190px;
-
-            display: flex;
-
-            justify-content: center;
-
-            align-items: center;
-        }
-
-
-        .paglu-gift-glow {
-
-            position: absolute;
-
-            width: 165px;
-
-            height: 165px;
-
-            border-radius: 50%;
-
-            background:
-                radial-gradient(
-                    circle,
-                    rgba(255,183,213,0.38),
-                    rgba(210,160,255,0.16) 45%,
-                    transparent 72%
-                );
-
-            filter: blur(16px);
-
-            animation:
-                pagluGiftGlow
-                3s ease-in-out infinite;
-        }
-
-
-        .paglu-gift-box {
-
-            position: relative;
-
-            width: 112px;
-
-            height: 88px;
-
-            margin-top: 32px;
-
-            border-radius: 8px;
-
-            background:
-                linear-gradient(
-                    145deg,
-                    #ffb7d5,
-                    #ed8fba
-                );
-
-            box-shadow:
-                0 15px 35px rgba(0,0,0,0.35),
-                0 0 28px rgba(255,183,213,0.35);
-
-            cursor: pointer;
-
-            animation:
-                pagluGiftFloat
-                3s ease-in-out infinite;
-
-            transition:
-                transform 0.4s ease;
-        }
-
-
-        .paglu-gift-box:active {
-
-            transform:
-                scale(0.94);
-        }
-
-
-        .paglu-gift-lid {
-
-            position: absolute;
-
-            left: -7px;
-
-            top: -17px;
-
-            width: 126px;
-
-            height: 26px;
-
-            border-radius: 7px;
-
-            background:
-                linear-gradient(
-                    145deg,
-                    #ffd0e3,
-                    #f29bc3
-                );
-
-            box-shadow:
-                0 5px 15px rgba(0,0,0,0.18);
-
-            transform-origin:
-                center bottom;
-
-            transition:
-                transform 1s
-                cubic-bezier(.2,.8,.2,1);
-        }
-
-
-        .paglu-ribbon-vertical {
-
-            position: absolute;
-
-            left: 50%;
-
-            top: 0;
-
-            width: 18px;
-
-            height: 100%;
-
-            transform:
-                translateX(-50%);
-
-            background:
-                rgba(255,244,249,0.86);
-        }
-
-
-        .paglu-ribbon-horizontal {
-
-            position: absolute;
-
-            left: -7px;
-
-            top: 29px;
-
-            width: 126px;
-
-            height: 17px;
-
-            background:
-                rgba(255,244,249,0.86);
-        }
-
-
-        .paglu-bow {
-
-            position: absolute;
-
-            left: 50%;
-
-            top: -30px;
-
-            width: 25px;
-
-            height: 25px;
-
-            transform:
-                translateX(-50%)
-                rotate(45deg);
-
-            border-radius: 6px;
-
-            background:
-                #fff0f7;
-
-            box-shadow:
-                0 0 14px rgba(255,255,255,0.45);
-
-            z-index: 4;
-        }
-
-
-        .paglu-bow::before,
-        .paglu-bow::after {
-
-            content: "";
-
-            position: absolute;
-
-            width: 30px;
-
-            height: 20px;
-
-            border-radius: 50%;
-
-            background:
-                #fff0f7;
-        }
-
-
-        .paglu-bow::before {
-
-            left: -21px;
-
-            top: 7px;
-
-            transform:
-                rotate(-35deg);
-        }
-
-
-        .paglu-bow::after {
-
-            right: -21px;
-
-            top: 7px;
-
-            transform:
-                rotate(35deg);
-        }
-
-
-        .paglu-tap-text {
-
-            position: relative;
-
-            z-index: 5;
-
-            margin-top: 30px;
-
-            padding: 13px 24px;
-
-            border-radius: 30px;
-
-            border:
-                1px solid
-                rgba(255,255,255,0.16);
-
-            background:
-                rgba(255,255,255,0.08);
-
-            color:
-                rgba(255,255,255,0.92);
-
-            font-family:
-                Arial,
-                sans-serif;
-
-            font-size: 0.92rem;
-
-            backdrop-filter:
-                blur(10px);
-
-            -webkit-backdrop-filter:
-                blur(10px);
-
-            animation:
-                pagluTapPulse
-                2.5s ease-in-out infinite;
-
-            cursor: pointer;
-        }
-
-
-        .paglu-gift-scene.opening
-        .paglu-gift-lid {
-
-            transform:
-                translateY(-30px)
-                rotate(-12deg);
-        }
-
-
-        .paglu-gift-scene.opening
-        .paglu-gift-box {
-
-            animation:
-                pagluGiftOpen
-                1.2s ease forwards;
-        }
-
-
-        .paglu-gift-scene.opening
-        .paglu-tap-text {
-
-            opacity: 0;
-
-            transition:
-                opacity 0.4s ease;
-        }
-
-
-        .paglu-gift-light {
-
-            position: absolute;
-
-            left: 50%;
-
-            top: 50%;
-
-            width: 10px;
-
-            height: 10px;
-
-            border-radius: 50%;
-
-            background: white;
-
-            box-shadow:
-                0 0 25px 10px rgba(255,255,255,0.85),
-                0 0 70px 30px rgba(255,183,213,0.6),
-                0 0 120px 55px rgba(190,150,255,0.4);
-
-            transform:
-                translate(-50%, -50%)
-                scale(0);
-
-            opacity: 0;
-
-            pointer-events: none;
-        }
-
-
-        .paglu-gift-scene.opening
-        .paglu-gift-light {
-
-            animation:
-                pagluGiftLight
-                1.7s ease-out forwards;
-        }
-
-
-        @keyframes pagluGiftGlow {
-
-            0%,
-            100% {
-
-                transform:
-                    scale(0.92);
-
-                opacity:
-                    0.65;
-            }
-
-            50% {
-
-                transform:
-                    scale(1.08);
-
-                opacity:
-                    1;
-            }
-        }
-
-
-        @keyframes pagluGiftFloat {
-
-            0%,
-            100% {
-
-                transform:
-                    translateY(0)
-                    rotate(0deg);
-            }
-
-            50% {
-
-                transform:
-                    translateY(-9px)
-                    rotate(1deg);
-            }
-        }
-
-
-        @keyframes pagluRomanticMessage {
-
-            0%,
-            100% {
-
-                opacity:
-                    0.88;
-            }
-
-            50% {
-
-                opacity:
-                    1;
-            }
-        }
-
-
-        @keyframes pagluTapPulse {
-
-            0%,
-            100% {
-
-                transform:
-                    scale(1);
-
-                box-shadow:
-                    0 0 0
-                    rgba(255,183,213,0);
-            }
-
-            50% {
-
-                transform:
-                    scale(1.035);
-
-                box-shadow:
-                    0 0 22px
-                    rgba(255,183,213,0.15);
-            }
-        }
-
-
-        @keyframes pagluGiftOpen {
-
-            0% {
-
-                transform:
-                    translateY(0)
-                    scale(1);
-            }
-
-            45% {
-
-                transform:
-                    translateY(-8px)
-                    scale(1.08);
-            }
-
-            100% {
-
-                transform:
-                    translateY(0)
-                    scale(1.02);
-            }
-        }
-
-
-        @keyframes pagluGiftLight {
-
-            0% {
-
-                transform:
-                    translate(-50%, -50%)
-                    scale(0);
-
-                opacity:
-                    0;
-            }
-
-            35% {
-
-                transform:
-                    translate(-50%, -50%)
-                    scale(5);
-
-                opacity:
-                    0.9;
-            }
-
-            100% {
-
-                transform:
-                    translate(-50%, -50%)
-                    scale(25);
-
-                opacity:
-                    0;
-            }
-        }
-
-
-        @media (max-width: 480px) {
-
-            .paglu-gift-message {
-
-                font-size:
-                    1.3rem;
-
-                margin-bottom:
-                    25px;
-            }
-
-            .paglu-gift-area {
-
-                transform:
-                    scale(0.94);
-            }
-
-            .paglu-tap-text {
-
-                font-size:
-                    0.88rem;
-            }
-        }
-
-    `;
-
-    document.head.appendChild(style);
+.paglu-scene .scene-button:active {
+transform: scale(.97);
 }
 
+.paglu-scene .scene-button:focus-visible {
+outline: 2px solid white;
+outline-offset: 4px;
+}
 
-/* =========================================================
-   CHAPTER 2 — SHOW GIFT
-   ========================================================= */
+.paglu-stars {
+position: absolute;
+inset: 0;
+overflow: hidden;
+pointer-events: none;
+z-index: -1;
+}
 
-function showGiftScene() {
+.paglu-tiny-star {
+position: absolute;
+width: 3px;
+height: 3px;
+border-radius: 50%;
+background: #fff;
+box-shadow: 0 0 9px 2px rgba(255, 220, 255, .45);
+animation: pagluTwinkle 3s ease-in-out infinite alternate;
+}
 
-    createGiftStyles();
+@keyframes pagluTwinkle {
+from { opacity: .25; transform: scale(.8); }
+to { opacity: .95; transform: scale(1.3); }
+}
 
+/* CHAPTER 2: GIFT */
 
-    const giftScene =
-        document.createElement("div");
+.paglu-gift-area {
+position: relative;
+width: min(210px, 62vw);
+height: 190px;
+display: flex;
+align-items: flex-end;
+justify-content: center;
+margin: 12px auto 18px;
+perspective: 700px;
+}
 
-    giftScene.className =
-        "paglu-gift-scene";
+.paglu-gift-glow {
+position: absolute;
+width: 175px;
+height: 150px;
+left: 50%;
+bottom: 5px;
+transform: translateX(-50%);
+border-radius: 50%;
+background: rgba(244, 121, 205, .25);
+filter: blur(28px);
+transition: opacity .7s ease, transform .7s ease;
+}
 
+.paglu-gift-box {
+position: relative;
+width: 174px;
+max-width: 100%;
+height: 122px;
+border-radius: 0 0 14px 14px;
+background: linear-gradient(135deg, #ffb5da, #e879b3);
+box-shadow:
+0 12px 30px rgba(0, 0, 0, .22),
+inset -8px 0 16px rgba(158, 50, 121, .1);
+cursor: pointer;
+z-index: 2;
+animation: pagluGiftFloat 3s ease-in-out infinite;
+-webkit-tap-highlight-color: transparent;
+}
 
-    giftScene.innerHTML = `
+.paglu-ribbon-vertical {
+position: absolute;
+top: 0;
+bottom: 0;
+left: 42%;
+width: 28px;
+background: linear-gradient(90deg, #fff1fb, #fff9ff, #ffe3f3);
+}
 
-<div class="paglu-gift-message">
+.paglu-ribbon-horizontal {
+position: absolute;
+left: -5%;
+right: -5%;
+top: 43px;
+height: 20px;
+background: linear-gradient(180deg, #fff6ff, #f8dff2);
+box-shadow: 0 2px 4px rgba(114, 52, 100, .1);
+}
 
-A little something for you... 💗
+.paglu-gift-lid {
+position: absolute;
+left: -8%;
+top: -19px;
+width: 116%;
+height: 34px;
+border-radius: 10px;
+background: linear-gradient(135deg, #ffc2e1, #f28fca);
+box-shadow: 0 5px 10px rgba(0, 0, 0, .15);
+transform-origin: 12% 100%;
+transition: transform .9s cubic-bezier(.2, .8, .2, 1);
+z-index: 3;
+}
 
-</div>
+.paglu-bow {
+position: absolute;
+top: -43px;
+left: 47%;
+width: 31px;
+height: 25px;
+border: 8px solid #fff0fa;
+border-radius: 80% 30% 70% 30%;
+transform: rotate(25deg);
+z-index: 4;
+}
 
+.paglu-bow::after {
+content: "";
+position: absolute;
+width: 27px;
+height: 23px;
+top: -6px;
+left: 8px;
+border: 8px solid #fff0fa;
+border-radius: 30% 80% 30% 70%;
+transform: rotate(35deg);
+}
 
-<div class="paglu-gift-area">
+.paglu-scene.opening .paglu-gift-lid {
+transform: translate(-12px, -48px) rotate(-24deg);
+}
 
-<div class="paglu-gift-glow"></div>
+.paglu-scene.opening .paglu-gift-glow {
+opacity: .9;
+transform: translateX(-50%) scale(1.45);
+}
 
-<div class="paglu-gift-box">
+.paglu-scene.opening .paglu-gift-box {
+animation: none;
+}
 
-<div class="paglu-gift-lid"></div>
+.paglu-gift-light {
+position: absolute;
+width: 14px;
+height: 14px;
+left: 50%;
+top: 50%;
+border-radius: 50%;
+background: #fff4ff;
+opacity: 0;
+pointer-events: none;
+transform: translate(-50%, -50%) scale(.2);
+}
 
-<div class="paglu-ribbon-vertical"></div>
+.paglu-scene.opening .paglu-gift-light {
+animation: pagluLightBurst 1.2s ease-out forwards;
+}
 
-<div class="paglu-ribbon-horizontal"></div>
+@keyframes pagluLightBurst {
+0% {
+opacity: 0;
+transform: translate(-50%, -50%) scale(.2);
+box-shadow: 0 0 0 0 rgba(255, 207, 246, .5);
+}
+35% {
+opacity: .95;
+box-shadow:
+0 0 0 45px rgba(255, 207, 246, .12),
+0 0 0 95px rgba(196, 159, 255, .08),
+0 0 35px 15px #ffdbf7;
+}
+100% {
+opacity: 0;
+transform: translate(-50%, -50%) scale(1.8);
+box-shadow:
+0 0 0 100px transparent,
+0 0 0 160px transparent;
+}
+}
 
-<div class="paglu-bow"></div>
+@keyframes pagluGiftFloat {
+0%, 100% { transform: translateY(0); }
+50% { transform: translateY(-7px); }
+}
 
-</div>
+.paglu-gift-message {
+max-width: 440px;
+min-height: 56px;
+margin: 0 auto 12px;
+font-size: clamp(1.25rem, 4.8vw, 1.8rem);
+line-height: 1.5;
+color: #fff0fb;
+text-shadow: 0 0 18px rgba(255, 172, 225, .35);
+}
 
-</div>
+.paglu-tap-text {
+margin-top: 10px;
+color: #f0d8f5;
+font-size: 1rem;
+animation: pagluHint 2s ease-in-out infinite;
+}
 
+@keyframes pagluHint {
+0%, 100% { opacity: .7; }
+50% { opacity: 1; }
+}
 
-<div class="paglu-tap-text">
+/* CHAPTER 3: LETTER */
 
-🎁 Tap the gift to open it
+.paglu-letter-scene {
+justify-content: flex-start;
+padding-top: max(35px, env(safe-area-inset-top));
+padding-bottom: max(35px, env(safe-area-inset-bottom));
+}
 
-</div>
+.paglu-envelope-wrap {
+position: relative;
+width: min(260px, 78vw);
+height: 172px;
+margin: 18px auto 25px;
+cursor: pointer;
+-webkit-tap-highlight-color: transparent;
+flex-shrink: 0;
+}
 
+.paglu-envelope-shadow {
+position: absolute;
+inset: 20px 8px 0;
+border-radius: 10px;
+background: rgba(0, 0, 0, .25);
+filter: blur(18px);
+}
 
-<div class="paglu-gift-light"></div>
+.paglu-envelope {
+position: absolute;
+inset: 24px 0 0;
+border-radius: 8px;
+background: linear-gradient(145deg, #ffc7e3, #e997c8);
+box-shadow: 0 12px 30px rgba(0, 0, 0, .24);
+overflow: hidden;
+}
 
+.paglu-envelope::before {
+content: "";
+position: absolute;
+inset: 0;
+background: linear-gradient(35deg, transparent 49%, rgba(255,255,255,.22) 50%, transparent 51%);
+}
+
+.paglu-envelope-flap {
+position: absolute;
+top: 24px;
+left: 0;
+width: 100%;
+height: 105px;
+background: linear-gradient(145deg, #ffe1f0, #f7b3d8);
+clip-path: polygon(0 0, 100% 0, 50% 100%);
+transform-origin: 50% 0;
+transition: transform .65s ease;
+z-index: 4;
+}
+
+.paglu-envelope-heart {
+position: absolute;
+z-index: 5;
+top: 69px;
+left: 50%;
+transform: translateX(-50%);
+font-size: 31px;
+filter: drop-shadow(0 2px 3px rgba(121, 43, 98, .2));
+transition: opacity .3s ease;
+}
+
+.paglu-letter-paper {
+position: absolute;
+left: 8%;
+right: 8%;
+top: 18px;
+height: 120px;
+padding-top: 25px;
+border-radius: 5px;
+color: #8b4d78;
+background: #fff9fd;
+box-shadow: 0 4px 12px rgba(0, 0, 0, .12);
+font-size: 1.05rem;
+transition: transform .8s ease, height .8s ease;
+z-index: 2;
+}
+
+.paglu-envelope-wrap.opened .paglu-envelope-flap {
+transform: rotateX(180deg);
+z-index: 1;
+}
+
+.paglu-envelope-wrap.opened .paglu-envelope-heart {
+opacity: 0;
+}
+
+.paglu-envelope-wrap.opened .paglu-letter-paper {
+transform: translateY(-72px);
+}
+
+.paglu-letter-card {
+width: 100%;
+max-width: 520px;
+margin: 0 auto;
+padding: 25px 22px;
+border: 1px solid rgba(255, 222, 247, .26);
+border-radius: 20px;
+background: linear-gradient(
+145deg,
+rgba(255, 242, 253, .09),
+rgba(193, 161, 242, .07)
+);
+box-shadow: 0 12px 38px rgba(0, 0, 0, .14);
+backdrop-filter: blur(8px);
+text-align: left;
+opacity: 0;
+transform: translateY(15px);
+transition: opacity .8s ease, transform .8s ease;
+}
+
+.paglu-letter-card.revealed {
+opacity: 1;
+transform: translateY(0);
+}
+
+.paglu-letter-card h2 {
+margin: 0 0 20px;
+color: #ffd9ef;
+text-align: center;
+font-size: clamp(1.5rem, 5vw, 2rem);
+line-height: 1.4;
+font-weight: normal;
+}
+
+.paglu-letter-body {
+color: #f7eaf9;
+font-size: 1rem;
+line-height: 1.95;
+white-space: pre-line;
+overflow-wrap: anywhere;
+}
+
+.paglu-letter-signature {
+margin-top: 22px;
+color: #ffc9e8;
+text-align: right;
+font-style: italic;
+line-height: 1.8;
+}
+
+.paglu-letter-footer {
+margin-top: 18px;
+color: #d9c7f0;
+text-align: center;
+font-size: .9rem;
+line-height: 1.8;
+}
+
+.paglu-next-scene {
+max-width: 470px;
+margin: 0 auto;
+}
+
+.paglu-memory-symbol {
+margin: 18px 0;
+font-size: clamp(3.5rem, 16vw, 5.5rem);
+filter: drop-shadow(0 0 24px rgba(255, 176, 225, .35));
+animation: pagluGiftFloat 3s ease-in-out infinite;
+}
+
+@media (max-width: 380px) {
+.paglu-scene { padding-left: 14px; padding-right: 14px; }
+.paglu-letter-card { padding: 21px 17px; }
+.paglu-letter-body { font-size: .96rem; line-height: 1.85; }
+.paglu-gift-area { transform: scale(.92); margin-top: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+.paglu-scene *,
+.paglu-scene *::before,
+.paglu-scene *::after {
+animation-duration: .01ms !important;
+animation-iteration-count: 1 !important;
+scroll-behavior: auto !important;
+}
+}
 `;
 
-
-document.body.appendChild(giftScene);
-
-
-/* Let the browser render first */
-
-requestAnimationFrame(() => {
-
-giftScene.classList.add("visible");
-
-});
-
-
-const giftBox =
-giftScene.querySelector(
-".paglu-gift-box"
-);
-
-
-const tapText =
-giftScene.querySelector(
-".paglu-tap-text"
-);
-
-
-giftBox.addEventListener(
-"click",
-() => {
-
-openGift(giftScene);
+document.head.appendChild(style);
 
 }
-);
 
+/* ---------------------------------------------------------
+STARS AND FLOWER PETALS
+--------------------------------------------------------- */
 
-tapText.addEventListener(
-"click",
-() => {
+function createStars() {
+if (!starsContainer) return;
 
-openGift(giftScene);
+starsContainer.innerHTML = "";
+const fragment = document.createDocumentFragment();
+
+for (let i = 0; i < 55; i++) {
+const star = document.createElement("span");
+star.className = "paglu-tiny-star";
+star.style.left = Math.random() * 100 + "%";
+star.style.top = Math.random() * 100 + "%";
+star.style.opacity = (0.3 + Math.random() * 0.7).toFixed(2);
+star.style.animationDelay = Math.random() * 3 + "s";
+star.style.animationDuration = (2.5 + Math.random() * 3) + "s";
+fragment.appendChild(star);
+}
+
+starsContainer.appendChild(fragment);
 
 }
-);
+
+function createPetals() {
+if (!flowersContainer) return;
+
+flowersContainer.innerHTML = "";
+const petals = ["🌸", "✿", "❀", "🌷", "✧", "❋"];
+const fragment = document.createDocumentFragment();
+
+for (let i = 0; i < 7; i++) {
+const petal = document.createElement("span");
+petal.textContent = petals[i % petals.length];
+petal.style.position = "absolute";
+petal.style.left = Math.random() * 92 + "%";
+petal.style.top = Math.random() * 90 + "%";
+petal.style.fontSize = (12 + Math.random() * 10) + "px";
+petal.style.opacity = ".55";
+petal.style.pointerEvents = "none";
+petal.style.animation = "pagluPetalFloat " +
+(5 + Math.random() * 4) + "s ease-in-out infinite";
+petal.style.animationDelay = Math.random() * 4 + "s";
+fragment.appendChild(petal);
 }
 
+flowersContainer.appendChild(fragment);
 
-/* =========================================================
-OPEN THE GIFT
-========================================================= */
+}
 
-function openGift(giftScene) {
+function addPetalAnimation() {
+if (document.getElementById("pagluPetalAnimation")) return;
 
-if (
-giftScene.classList.contains("opening")
-) {
+const style = document.createElement("style");
+style.id = "pagluPetalAnimation";
+style.textContent = `
+@keyframes pagluPetalFloat {
+0%, 100% { transform: translateY(0) rotate(0deg); }
+50% { transform: translateY(-13px) rotate(12deg); }
+}
+`;
+document.head.appendChild(style);
+
+}
+
+/* ---------------------------------------------------------
+GENERAL HELPERS
+--------------------------------------------------------- */
+
+function wait(ms) {
+return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function typeText(element, text, speed = 45) {
+return new Promise(resolve => {
+if (!element) {
+resolve();
 return;
 }
 
+let index = 0;
+element.textContent = "";
+
+function typeNextCharacter() {
+if (index >= text.length) {
+resolve();
+return;
+}
+
+element.textContent += text.charAt(index);
+index++;
+
+// Use a single scheduled callback at a time.
+setTimeout(typeNextCharacter, speed);
+}
+
+typeNextCharacter();
+});
+
+}
+
+function showError() {
+if (errorMessage) {
+errorMessage.textContent = "That isn't quite right, Paglu's secret is still safe. 💗";
+errorMessage.style.display = "block";
+}
+
+if (loginCard) {
+loginCard.classList.remove("shake");
+void loginCard.offsetWidth;
+loginCard.classList.add("shake");
+
+setTimeout(() => loginCard.classList.remove("shake"), 550);
+}
+
+if (passwordInput) {
+passwordInput.value = "";
+passwordInput.focus();
+passwordInput.setAttribute("aria-invalid", "true");
+}
+
+}
+
+/* ---------------------------------------------------------
+CHAPTER 1: PASSWORD ENTRANCE
+--------------------------------------------------------- */
+
+function unlockStars() {
+if (isUnlocked) return;
+isUnlocked = true;
+
+if (unlockButton) {
+unlockButton.disabled = true;
+unlockButton.style.opacity = ".5";
+}
+
+if (passwordInput) {
+passwordInput.disabled = true;
+passwordInput.removeAttribute("aria-invalid");
+}
+
+if (errorMessage) errorMessage.style.display = "none";
+
+if (starsContainer) {
+starsContainer.style.transition = "opacity 1.5s ease";
+starsContainer.style.opacity = "1";
+}
+
+if (!loginCard) {
+showGiftScene();
+return;
+}
+
+loginCard.innerHTML = `
+<div style="font-size:2.2rem;margin-bottom:18px;">🌙 ✨ 🌸</div>
+<h1 id="storyText"
+style="font-family:Georgia,serif;font-weight:normal;
+font-size:clamp(1.35rem,5vw,1.8rem);
+line-height:1.7;color:#fff0fb;
+text-shadow:0 0 20px rgba(255,180,230,.35);">
+</h1>
+<div style="margin-top:18px;color:#e7d7f5;font-size:1.5rem;">
+⋆｡°✩
+</div>
+`;
+
+typeStory();
+
+}
+
+async function typeStory() {
+const storyText = document.getElementById("storyText");
+if (!storyText) {
+showGiftScene();
+return;
+}
+
+await typeText(storyText, "Password Accepted...", 40);
+await wait(650);
+
+await typeText(storyText, "Hello, Paglu...", 50);
+await wait(800);
+
+await typeText(storyText, "I've been waiting for you.", 38);
+await wait(900);
+
+await typeText(storyText, "Your birthday story is ready...", 38);
+await wait(1100);
+
+storyText.style.fontSize = "clamp(1.1rem,4.5vw,1.4rem)";
+await typeText(storyText, "✨ The journey is about to begin... ✨", 35);
+await wait(1100);
+
+showGiftScene();
+
+}
+
+/* ---------------------------------------------------------
+CHAPTER 2: THE MAGICAL GIFT
+--------------------------------------------------------- */
+
+function createScene(className) {
+const scene = document.createElement("section");
+scene.className = "paglu-scene " + className;
+scene.setAttribute("aria-live", "polite");
+
+const stars = document.createElement("div");
+stars.className = "paglu-stars";
+stars.setAttribute("aria-hidden", "true");
+
+const fragment = document.createDocumentFragment();
+
+for (let i = 0; i < 35; i++) {
+const star = document.createElement("span");
+star.className = "paglu-tiny-star";
+star.style.left = Math.random() * 100 + "%";
+star.style.top = Math.random() * 100 + "%";
+star.style.animationDelay = Math.random() * 3 + "s";
+star.style.animationDuration = (2.5 + Math.random() * 3) + "s";
+fragment.appendChild(star);
+}
+
+stars.appendChild(fragment);
+scene.appendChild(stars);
+document.body.appendChild(scene);
+
+requestAnimationFrame(() => scene.classList.add("visible"));
+return scene;
+
+}
+
+function showGiftScene() {
+addChapterStyles();
+
+const giftScene = createScene("paglu-gift-scene");
+
+giftScene.innerHTML += `
+<div class="paglu-gift-message">
+✨ Something beautiful is waiting... ✨
+</div>
+
+<div class="paglu-gift-area">
+<div class="paglu-gift-glow"></div>
+
+<div class="paglu-gift-box" role="button"
+tabindex="0" aria-label="Open your birthday gift">
+<div class="paglu-gift-lid"></div>
+<div class="paglu-ribbon-vertical"></div>
+<div class="paglu-ribbon-horizontal"></div>
+<div class="paglu-bow"></div>
+</div>
+</div>
+
+<div class="paglu-tap-text">
+🎁 Tap the gift to open it
+</div>
+
+<div class="paglu-gift-light"></div>
+`;
+
+const giftBox = giftScene.querySelector(".paglu-gift-box");
+const tapText = giftScene.querySelector(".paglu-tap-text");
+
+function handleGiftTap() {
+openGift(giftScene);
+}
+
+giftBox.addEventListener("click", handleGiftTap);
+giftBox.addEventListener("keydown", event => {
+if (event.key === "Enter" || event.key === " ") {
+event.preventDefault();
+handleGiftTap();
+}
+});
+tapText.addEventListener("click", handleGiftTap);
+
+}
+
+function openGift(giftScene) {
+if (giftOpened) return;
+giftOpened = true;
 
 giftScene.classList.add("opening");
 
+const tapText = giftScene.querySelector(".paglu-tap-text");
+if (tapText) tapText.textContent = "A little magic, just for you... 💗";
 
 setTimeout(() => {
-
-const message =
-giftScene.querySelector(
-".paglu-gift-message"
-);
-
-
-message.textContent =
-"✨ Something beautiful is waiting... ✨";
-
-
-message.style.opacity = "1";
-
-message.style.transform =
-"translateY(0)";
-
-
-}, 1500);
+const message = giftScene.querySelector(".paglu-gift-message");
+if (message) {
+message.textContent = "💌 A letter written just for you...";
 }
 
+const continueButton = document.createElement("button");
+continueButton.className = "scene-button";
+continueButton.type = "button";
+continueButton.textContent = "Discover your letter 💌";
+continueButton.addEventListener("click", () => {
+giftScene.style.opacity = "0";
+setTimeout(() => {
+giftScene.remove();
+showLetterScene();
+}, 750);
+});
 
-/* =========================================================
-CHECK PASSWORD
-========================================================= */
-
-function checkPassword() {
-
-if (!passwordInput) return;
-
-
-const enteredPassword =
-passwordInput.value.trim();
-
-
-if (
-enteredPassword ===
-secretPassword
-) {
-
-unlockStars();
-
-} else {
-
-showError();
+giftScene.appendChild(continueButton);
+}, 1400);
 
 }
+
+/* ---------------------------------------------------------
+CHAPTER 3: A HEARTFELT LETTER FOR PAGLU
+--------------------------------------------------------- */
+
+function showLetterScene() {
+if (letterOpened) return;
+letterOpened = true;
+
+const scene = createScene("paglu-letter-scene");
+
+scene.innerHTML += `
+<div class="scene-heading">
+A little letter from the heart 💌
+</div>
+
+<p class="scene-subtitle">
+There are some things that deserve to be said
+a little more gently, and remembered a little longer.
+</p>
+
+<div class="paglu-envelope-wrap" role="button"
+tabindex="0" aria-label="Open your birthday letter">
+<div class="paglu-envelope-shadow"></div>
+<div class="paglu-envelope"></div>
+<div class="paglu-letter-paper">For Paglu, with love ♡</div>
+<div class="paglu-envelope-flap"></div>
+<div class="paglu-envelope-heart">💗</div>
+</div>
+
+<p class="scene-subtitle paglu-envelope-prompt">
+Tap the envelope to read your letter ✨
+</p>
+
+<article class="paglu-letter-card" aria-label="Birthday letter">
+<h2>Happy Birthday, Paglu 💗</h2>
+
+<div class="paglu-letter-body"></div>
+
+<div class="paglu-letter-signature">
+May your heart always find reasons to smile. 🌷
+</div>
+
+<div class="paglu-letter-footer">
+Made with care, just for you ✨
+</div>
+
+<div style="text-align:center;">
+<button class="scene-button paglu-memories-button" type="button">
+Continue to our memories ✨
+</button>
+</div>
+</article>
+`;
+
+const envelope = scene.querySelector(".paglu-envelope-wrap");
+const prompt = scene.querySelector(".paglu-envelope-prompt");
+const card = scene.querySelector(".paglu-letter-card");
+const letterBody = scene.querySelector(".paglu-letter-body");
+const memoriesButton = scene.querySelector(".paglu-memories-button");
+
+const letterParagraphs = [
+"Some people make ordinary moments feel special just by being part of them. You have a way of making the world feel a little brighter, and today I hope that same brightness finds its way back to you.",
+
+"On your birthday, I wish you days filled with little joys, peaceful moments, unexpected kindness, and dreams that slowly turn into beautiful memories. May you always find warmth when life feels cold, courage when things feel difficult, and a reason to smile even on the quietest days.",
+
+"I hope this new chapter of your life brings you closer to everything your heart has been wishing for. Never forget that you deserve happiness, gentleness, and all the beautiful things life has yet to show you.",
+
+"Today is your day, Paglu. I hope it feels as lovely and special as you deserve. Happy Birthday, once again. 🌸"
+];
+
+function openLetter() {
+if (envelope.classList.contains("opened")) return;
+
+envelope.classList.add("opened");
+prompt.textContent = "A little wish, from the heart... 💗";
+
+setTimeout(() => {
+card.classList.add("revealed");
+letterBody.textContent = letterParagraphs.join("\n\n");
+}, 650);
 }
 
+envelope.addEventListener("click", openLetter);
+envelope.addEventListener("keydown", event => {
+if (event.key === "Enter" || event.key === " ") {
+event.preventDefault();
+openLetter();
+}
+});
 
-/* =========================================================
-BUTTON
-========================================================= */
+memoriesButton.addEventListener("click", () => {
+scene.style.opacity = "0";
+
+setTimeout(() => {
+scene.remove();
+showMemoriesInvitation();
+}, 750);
+});
+
+}
+
+/* ---------------------------------------------------------
+TRANSITION: INVITATION TO THE MEMORIES CHAPTER
+Your personal photos and videos can be added next.
+--------------------------------------------------------- */
+
+function showMemoriesInvitation() {
+const scene = createScene("paglu-next-scene");
+
+scene.innerHTML += `
+<div class="scene-heading">
+And this is only the beginning... 🌙
+</div>
+
+<div class="paglu-memory-symbol" aria-hidden="true">🌸 ✨ 🌌</div>
+
+<div class="scene-heading" style="font-size:clamp(1.25rem,4.5vw,1.7rem);">
+Our little world of memories
+</div>
+
+<p class="scene-subtitle">
+There are more little moments waiting to be shared.
+The next chapter will hold your favourite photos,
+videos, and the memories that make this story yours.
+</p>
+
+<p class="scene-subtitle" style="color:#ffcce9;">
+Until then, keep this little birthday wish close to your heart. 💗
+</p>
+`;
+
+}
+
+/* ---------------------------------------------------------
+STARTUP
+--------------------------------------------------------- */
+
+addChapterStyles();
+addPetalAnimation();
+createStars();
+createPetals();
 
 if (unlockButton) {
-
-unlockButton.addEventListener(
-"click",
-checkPassword
-);
+unlockButton.addEventListener("click", checkPassword);
 }
-
-
-/* =========================================================
-ENTER KEY
-========================================================= */
 
 if (passwordInput) {
+passwordInput.addEventListener("keydown", event => {
+if (event.key === "Enter") checkPassword();
+});
+}
 
-passwordInput.addEventListener(
-"keydown",
-function(event) {
+function checkPassword() {
+if (!passwordInput || isUnlocked) return;
 
-if (event.key === "Enter") {
-
-checkPassword();
-
+if (passwordInput.value.trim() === secretPassword) {
+unlockStars();
+} else {
+showError();
 }
 
 }
-);
-}
-
-
-/* =========================================================
-START EVERYTHING
-========================================================= */
-
-createStars();
-
-createPetals();
+})();
